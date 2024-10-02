@@ -3,6 +3,8 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.EntityFrameworkCore;
+using ProAtividade.API.Data;
 using ProAtividade.API.models;
 
 namespace ProAtividade.API.Controllers
@@ -11,54 +13,63 @@ namespace ProAtividade.API.Controllers
     [Route("api/[controller]")]
     public class AtividadeController : ControllerBase
     {
-        public List<Atividade> Atividades = new List<Atividade>(){
-            new Atividade(1),
-            new Atividade(2),
-            new Atividade(3),
-        };
-
-        [HttpGet]        
+        private readonly DataContext _context;
+        public AtividadeController(DataContext context)
+        {
+            _context = context;
+        }
+        [HttpGet]
         public IActionResult Get()
         {
-            return  Ok(Atividades);
+            return Ok(_context.Atividades.ToList());
         }
-        [HttpGet("{id}")]        
+        [HttpGet("{id}")]
         public IActionResult Get(int id)
         {
-            return  Ok(Atividades.FirstOrDefault( f => f.Id == id));
+            return Ok(_context.Atividades.FirstOrDefault(a => a.Id == id));
         }
 
-        [HttpPost]        
-        public IActionResult Post([FromBody]Atividade atividade)
+        [HttpPost]
+        public IActionResult Post([FromBody] Atividade atividade)
         {
-            Atividades.Add(atividade);
-            return  Ok(Atividades);
+            _context.Atividades.Add(atividade);
+            _context.SaveChanges();
+            return Ok(_context.Atividades.ToList());
         }
 
-        [HttpPut("{id}")]         
+        [HttpPut("{id}")]
         public IActionResult Put(int id, [FromBody] Atividade atv)
-        {            
-            var atividade = Atividades.FirstOrDefault(a => a.Id == id);
+        {
+            if (id != atv.Id)
+            {
+                return BadRequest("ID mismatch.");
+            }
+
+            var atividade = _context.Atividades.FirstOrDefault(a => a.Id == id);
+
+
 
             if (atividade != null)
             {
                 atividade.Descricao = atv.Descricao;
                 atividade.Titulo = atv.Titulo;
                 atividade.Prioridade = atv.Prioridade;
+                _context.Atividades.Update(atividade);
+                _context.SaveChanges();
             }
-            
+            else return NotFound("Não encontrado");
 
-            return  Ok(Atividades);
+
+            return Ok(_context.Atividades.ToList());
         }
 
-        [HttpDelete("{id}")]         
+        [HttpDelete("{id}")]
         public IActionResult Delete(int id)
         {
-            var atividade = Atividades.FirstOrDefault(a => a.Id == id);
-            Atividades.Remove(atividade);
-            return  Ok(Atividades);
+            var atividade = _context.Atividades.FirstOrDefault(a => a.Id == id);
+            _context.Atividades.Remove(atividade);
+            _context.SaveChanges();
+            return Ok(_context.Atividades.ToList());
         }
-
-
     }
 }
