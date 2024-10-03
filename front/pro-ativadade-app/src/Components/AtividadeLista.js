@@ -4,12 +4,10 @@ export default function AtividadeLista(props) {
 
     function prioridadeLabel(param) {
     switch (param) {
-      case "1":
-        return "Baixa";
-      case "2":
-        return "Normal";
-      case "3":
-        return "Alta";
+      case "Baixa":        
+      case "Normal":        
+      case "Alta":
+        return param;
       default:
         return "Não definido";
     }
@@ -17,11 +15,11 @@ export default function AtividadeLista(props) {
 
   function prioridadeStyle(param) {
     switch (param) {
-      case "1":
+      case "Baixa":
         return "smile";
-      case "2":
+      case "Normal":
         return "meh";
-      case "3":
+      case "Alta":
         return "frown";
       default:
         return "Não definido";
@@ -29,11 +27,11 @@ export default function AtividadeLista(props) {
   }
   function prioridadeCor(param) {
     switch (param) {
-      case "1":
+      case "Baixa":
         return "success";
-      case "2":
+      case "Normal":
         return "secondary";
-      case "3":
+      case "Alta":
         return "danger";
       default:
         return "Não definido";
@@ -43,16 +41,20 @@ export default function AtividadeLista(props) {
     
     <div>
       <div className="mt-3">
-        {props.atividades.map((ativ) => (
+        {
+        
+        
+        props.atividades.map((ativ) => (
           <Atividade
-          key={ativ.id}
+            key={ativ.id}
             prioridadeCor={prioridadeCor}
             ativ={ativ}
             prioridadeStyle={prioridadeStyle}
             prioridadeLabel={prioridadeLabel}
-            DeletarAtividade={props.DeletarAtividade}
             PegarAtividade = {props.PegarAtividade}
+            handleConfirmModal={props.handleConfirmModal}
           />
+          
         ))}
       </div>
     </div>

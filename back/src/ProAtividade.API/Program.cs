@@ -12,6 +12,9 @@ builder.Services.AddSwaggerGen();
 //adicionar dataContext 
 builder.Services.AddDbContext<DataContext>(options => options.UseSqlite(builder.Configuration.GetConnectionString("Default")));
 
+//perimitir cors para o front
+builder.Services.AddCors();
+
 var app = builder.Build();
 
 if (app.Environment.IsDevelopment())
@@ -23,5 +26,6 @@ if (app.Environment.IsDevelopment())
 // app.UseHttpsRedirection();
 
 app.MapControllers();
+app.UseCors(option => option.AllowAnyHeader().AllowAnyMethod().AllowAnyOrigin());
 
 app.Run();

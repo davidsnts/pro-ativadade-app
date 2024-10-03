@@ -32,9 +32,9 @@ namespace ProAtividade.API.Controllers
         [HttpPost]
         public IActionResult Post([FromBody] Atividade atividade)
         {
-            _context.Atividades.Add(atividade);
+            var retorno = _context.Atividades.Add(atividade);
             _context.SaveChanges();
-            return Ok(_context.Atividades.ToList());
+            return Ok(atividade);
         }
 
         [HttpPut("{id}")]
@@ -67,8 +67,11 @@ namespace ProAtividade.API.Controllers
         public IActionResult Delete(int id)
         {
             var atividade = _context.Atividades.FirstOrDefault(a => a.Id == id);
-            _context.Atividades.Remove(atividade);
-            _context.SaveChanges();
+            if (atividade != null)
+            {
+                _context.Atividades.Remove(atividade);
+                _context.SaveChanges();
+            }
             return Ok(_context.Atividades.ToList());
         }
     }

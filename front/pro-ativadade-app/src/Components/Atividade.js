@@ -21,11 +21,13 @@ export default function Atividade(props) {
               className={
                 "ms-1 text-black text-" +
                 props.prioridadeCor(props.ativ.prioridade)
+               
+                
               }
             >
               <i
                 className={
-                  "me-1 far fa-" + props.prioridadeStyle(props.ativ.prioridade)
+                  "me-1 far fa-" + props.prioridadeStyle(props.ativ.prioridade)+ " text-" + props.prioridadeCor(props.ativ.prioridade)
                 }
               ></i>
               <span
@@ -46,7 +48,7 @@ export default function Atividade(props) {
           </button>
           <button
             className="btn btn-outline-danger btn-sm me-2"
-            onClick={() => props.DeletarAtividade(props.ativ.id)}
+            onClick={() => props.handleConfirmModal(props.ativ.id)}
           >
             <i className="fas fa-trash me-2"></i>
             Deletar
