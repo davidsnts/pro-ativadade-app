@@ -1,78 +1,75 @@
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Threading.Tasks;
+using Microsoft.AspNetCore.Http.HttpResults;
 using Microsoft.AspNetCore.Mvc;
-using Microsoft.EntityFrameworkCore;
-using ProAtividade.API.Data;
-using ProAtividade.API.models;
+using ProAtividade.Data.Context;
+using ProAtividade.Domain.Entities;
+using ProAtividade.Domain.Interfaces.Repositories;
+using ProAtividade.Domain.Interfaces.Services;
+
 
 namespace ProAtividade.API.Controllers
 {
     [ApiController]
     [Route("api/[controller]")]
     public class AtividadeController : ControllerBase
-    {
-        private readonly DataContext _context;
-        public AtividadeController(DataContext context)
+    {        
+
+        private readonly IAtividadeService _atividadeService;
+        
+        public AtividadeController(IAtividadeService atividadeService)
         {
-            _context = context;
+            _atividadeService = atividadeService;            
         }
         [HttpGet]
-        public IActionResult Get()
+        public async Task<IActionResult> Get()
         {
-            return Ok(_context.Atividades.ToList());
+            return Ok(await _atividadeService.PegarTodasAtividadesAsync());
         }
         [HttpGet("{id}")]
-        public IActionResult Get(int id)
+        public async Task<IActionResult> Get(int id)
         {
-            return Ok(_context.Atividades.FirstOrDefault(a => a.Id == id));
+            return Ok(await _atividadeService.PegarAtividadePorIdAsync(id));
         }
 
         [HttpPost]
-        public IActionResult Post([FromBody] Atividade atividade)
+        public async Task<IActionResult> Post([FromBody] Atividade atividade)
         {
-            var retorno = _context.Atividades.Add(atividade);
-            _context.SaveChanges();
-            return Ok(atividade);
+            var retorno = await _atividadeService.AdicionarAtividade(atividade);            
+            return Ok(retorno);
         }
 
         [HttpPut("{id}")]
-        public IActionResult Put(int id, [FromBody] Atividade atv)
+        public async Task<IActionResult> Put(int id, [FromBody] Atividade atv)
         {
             if (id != atv.Id)
             {
                 return BadRequest("ID mismatch.");
             }
 
-            var atividade = _context.Atividades.FirstOrDefault(a => a.Id == id);
-
-
+            var atividade = await _atividadeService.PegarAtividadePorIdAsync(atv.Id);
 
             if (atividade != null)
             {
                 atividade.Descricao = atv.Descricao;
                 atividade.Titulo = atv.Titulo;
                 atividade.Prioridade = atv.Prioridade;
-                _context.Atividades.Update(atividade);
-                _context.SaveChanges();
+                await _atividadeService.AtualizarAtividade(atividade);
+                
             }
-            else return NotFound("Não encontrado");
+            else return NoContent();
 
 
-            return Ok(_context.Atividades.ToList());
+            return Ok(await _atividadeService.PegarTodasAtividadesAsync());
         }
 
         [HttpDelete("{id}")]
-        public IActionResult Delete(int id)
+        public async Task<IActionResult> Delete(int id)
         {
-            var atividade = _context.Atividades.FirstOrDefault(a => a.Id == id);
+            var atividade = _atividadeService.PegarAtividadePorIdAsync(id);
             if (atividade != null)
             {
-                _context.Atividades.Remove(atividade);
-                _context.SaveChanges();
+               _atividadeService.DeletarAtividade(id);
             }
-            return Ok(_context.Atividades.ToList());
+            return Ok(await _atividadeService.PegarTodasAtividadesAsync());
         }
     }
 }

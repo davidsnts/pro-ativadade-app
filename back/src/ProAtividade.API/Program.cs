@@ -1,6 +1,10 @@
 using System.Text.Json.Serialization;
 using Microsoft.EntityFrameworkCore;
-using ProAtividade.API.Data;
+using ProAtividade.Data.Context;
+using ProAtividade.Data.Repositories;
+using ProAtividade.Domain.Entities;
+using ProAtividade.Domain.Interfaces.Repositories;
+using ProAtividade.Domain.Interfaces.Services;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -11,6 +15,11 @@ builder.Services.AddSwaggerGen();
 
 //adicionar dataContext 
 builder.Services.AddDbContext<DataContext>(options => options.UseSqlite(builder.Configuration.GetConnectionString("Default")));
+
+//adicionar a service e a repo
+builder.Services.AddScoped<IAtividadeRepo, AtividadeRepo>();
+builder.Services.AddScoped<IAtividadeService, AtividadeService>();
+builder.Services.AddScoped<IGeralRepo, GeralRepo>();
 
 //perimitir cors para o front
 builder.Services.AddCors();
