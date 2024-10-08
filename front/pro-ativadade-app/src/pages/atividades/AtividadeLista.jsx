@@ -1,5 +1,5 @@
 import React from "react";
-import Atividade from "./Atividade";
+import AtividadeItem from "./AtividadeItem";
 export default function AtividadeLista(props) {
 
     function prioridadeLabel(param) {
@@ -45,7 +45,7 @@ export default function AtividadeLista(props) {
         
         
         props.atividades.map((ativ) => (
-          <Atividade
+          <AtividadeItem
             key={ativ.id}
             prioridadeCor={prioridadeCor}
             ativ={ativ}
