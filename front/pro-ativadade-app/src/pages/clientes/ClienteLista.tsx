@@ -2,7 +2,7 @@ import React, { useState } from "react";
 import TitlePage from "../../Components/TitlePage";
 import { Button, Form, InputGroup } from "react-bootstrap";
 import { useNavigate } from "react-router-dom";
-export default function ClienteLista() {
+const  ClienteLista = () => {
   const clientes = [
     {
       id: 1,
@@ -41,7 +41,7 @@ export default function ClienteLista() {
     },
   ];
   const [termoBusca, setTermoBusca] = useState("");
-  const handleInputChange = (e) => {
+  const handleInputChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     setTermoBusca(e.target.value);
   };
   const clientesFiltrados = clientes.filter((cliente) => {
@@ -104,3 +104,4 @@ export default function ClienteLista() {
     </>
   );
 }
+export default ClienteLista

@@ -2,7 +2,7 @@ import React from "react";
 import TitlePage from "../../Components/TitlePage";
 import { useNavigate, useParams } from "react-router-dom";
 
-export default function ClienteForm() {
+const ClienteForm = () => {
   const navigate = useNavigate();
   let { id } = useParams();
   const acaoVoltar = () => {
@@ -11,7 +11,7 @@ export default function ClienteForm() {
 
   return (
     <>
-      <TitlePage title = { 'Cliente Detalhes ' + (id !== undefined ? id : '') } >
+      <TitlePage title={"Cliente Detalhes " + (id !== undefined ? id : "")}>
         <button className="btn btn-outline-secondary me-2" onClick={acaoVoltar}>
           {" "}
           <i className="fas fa-arrow-left me-2"></i>Voltar
@@ -20,4 +20,5 @@ export default function ClienteForm() {
       <div></div>
     </>
   );
-}
+};
+export default ClienteForm;

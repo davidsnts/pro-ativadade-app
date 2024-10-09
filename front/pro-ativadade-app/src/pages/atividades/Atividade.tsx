@@ -4,20 +4,29 @@ import api from "../../api/atividade";
 import TitlePage from "../../Components/TitlePage";
 import AtividadeLista from './AtividadeLista';
 import AtividadeForm from './AtividadeForm';
+import { Iatividade, Prioridade } from "../../Model/Iatividade";
 
+const atividadeInicial: Iatividade = {
+  id: 0,
+  titulo: "",
+  prioridade: Prioridade.NaoDefino,
+  descricao: "",
+};
 
-function Atividade() {
+const Atividade = () => {
   const [showAtividadeModal, setShowAtividadeModal] = useState(false);
-  const [atividades, setAtividades] = useState([]);
-  const [AtivSelecionada, setAtividade] = useState({ id: 0 });
   const [smShowConfirmModal, setSmShowConfirmModal] = useState(false);
 
+  const [atividades, setAtividades] = useState<Iatividade[]>([]);
+  const [AtivSelecionada, setAtividade] = useState<Iatividade>(atividadeInicial);
+  
+
   const handleAtividadeModal = () => setShowAtividadeModal(!showAtividadeModal);
-  const handleConfirmModal = (id) => {
+  const handleConfirmModal = (id: number) => {
     if (id !== 0 && id !== undefined) {
       const atividade = atividades.filter((atividade) => atividade.id === id);
       setAtividade(atividade[0]);
-    } else setAtividade({ id: 0 });
+    } else setAtividade(atividadeInicial);
     setSmShowConfirmModal(!smShowConfirmModal);
   };
 
@@ -38,29 +47,29 @@ function Atividade() {
 
   function CancelarAtividade() {
     handleAtividadeModal();
-    setAtividade({ id: 0 });
+    setAtividade(atividadeInicial);
   }
 
-  const AtualizarAtividade = async (ativ) => {
+  const AtualizarAtividade = async (ativ: Iatividade) => {
     const response = await api.put(`atividade/${ativ.id}`, ativ);
     handleAtividadeModal();
     setAtividades([...response.data]);
   };
 
-  const DeletarAtividade = async (id) => {
+  const DeletarAtividade = async (id: number) => {
     const response = await api.delete(`atividade/${id}`);
     handleConfirmModal(0);
     setAtividades([...response.data]);
   };
 
-  const AddAtividade = async (ativ) => {
+  const AddAtividade = async (ativ: Iatividade) => {
     const response = await api.post("atividade", ativ);
     atividades.push(response.data);
     setAtividades([...atividades]);
     handleAtividadeModal();
   };
 
-  function PegarAtividade(id) {
+  function PegarAtividade(id: number) {
     const atividade = atividades.filter((atividade) => atividade.id === id);
     handleAtividadeModal();
 
@@ -68,7 +77,7 @@ function Atividade() {
   }
 
   function btnAddAtividade() {
-    setAtividade({ id: 0 });
+    setAtividade(atividadeInicial);
     handleAtividadeModal();
   }
   return (
@@ -95,18 +104,16 @@ function Atividade() {
           </Modal.Title>
         </Modal.Header>
         <Modal.Body>
-          <AtividadeForm
-            handleAtividadeModal={handleAtividadeModal}
+          <AtividadeForm            
             CancelarAtividade={CancelarAtividade}
-            AddAtividade={AddAtividade}
-            atividades={atividades}
+            AddAtividade={AddAtividade}            
             AtivSelecionada={AtivSelecionada}
             AtualizarAtividade={AtualizarAtividade}
           />
         </Modal.Body>
       </Modal>
 
-      <Modal size="sm" show={smShowConfirmModal} onHide={handleConfirmModal}>
+      <Modal size="sm" show={smShowConfirmModal}>
         <Modal.Header closeButton>
           <Modal.Title>
             Excluindo Atividade{" "}

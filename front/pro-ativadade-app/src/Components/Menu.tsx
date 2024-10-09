@@ -1,6 +1,7 @@
 import { Container, Nav, Navbar, NavDropdown } from "react-bootstrap";
 import { NavLink } from "react-router-dom";
-export default function Menu() {
+
+const Menu = () => {
   return (
     <Navbar expand="lg" bg="dark" variant="dark">
       <Container>
@@ -31,4 +32,5 @@ export default function Menu() {
       </Container>
     </Navbar>
   );
-}
+};
+export default Menu;
